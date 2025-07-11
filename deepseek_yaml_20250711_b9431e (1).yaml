@@ -1,0 +1,26 @@
+name: Telegram Bot 24/7
+on: 
+  workflow_dispatch:  # Запуск вручную
+  push:               # Автозапуск при обновлении кода
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install python-telegram-bot
+          
+      - name: Run bot
+        run: |
+          nohup python3 forwarder_bot.py > bot.log 2>&1 &
+          sleep 10  # Даем боту время запуститься
+          echo "🟢 Бот запущен! Проверьте логи:"
+          tail -n 20 bot.log
